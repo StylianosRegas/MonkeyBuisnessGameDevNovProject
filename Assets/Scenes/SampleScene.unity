@@ -764,9 +764,10 @@ GameObject:
   - component: {fileID: 2122614080}
   - component: {fileID: 2122614079}
   - component: {fileID: 2122614081}
-  m_Layer: 0
+  - component: {fileID: 2122614082}
+  m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -860,7 +861,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0
-  m_GravityScale: 0
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -931,6 +932,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement2d
   speed: 7
+  runAcceleration: 50
   jumpHeight: 12
   jumpDelay: 0.1
   jumpGravity: 10
@@ -942,8 +944,27 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  isLeft: 0
   velocity: {x: 0, y: 0}
   isGrounded: 0
+--- !u!114 &2122614082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122614076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec72cf3328955d840b7bfbebfdef48de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  Banana: {fileID: 1015412338749934949, guid: 2d0420b7010009743842b2d00600ffcd, type: 3}
+  launchForceX: 5
+  launchForceY: 5
+  angularForce: 300
+  cooldownDuration: 0.75
+  playerMovement: {fileID: 2122614081}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

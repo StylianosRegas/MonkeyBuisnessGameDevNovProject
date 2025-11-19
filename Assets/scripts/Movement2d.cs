@@ -16,6 +16,9 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 boxSize;
     public float castDistance;
     public LayerMask groundLayer;
+    public bool isLeft = false;
+    
+
 
     [SerializeField]
     private Vector2 velocity;
@@ -75,9 +78,10 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Clamp(velocity.y, -maxFallSpeed, 0);
         }
 
+
         rb.linearVelocity = velocity;
     }
-    
+
     /*private void OnCollisionExit2D(Collision2D collision)
     {
         foreach (var coll in collision.contacts)
@@ -88,8 +92,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }*/
-    
-    
+
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         foreach (var coll in collision.contacts)
@@ -102,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-    
+
     private void OnCollisionStay2D(Collision2D collision)
     {
         foreach (var coll in collision.contacts)
@@ -113,7 +117,8 @@ public class PlayerMovement : MonoBehaviour
 
     public bool IsGrounded()
     {
-        if(Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer)){
+        if (Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer))
+        {
             return true;
         }
 
@@ -130,8 +135,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-      
-        Gizmos.DrawWireCube(transform.position-transform.up* castDistance, boxSize);
+
+        Gizmos.DrawWireCube(transform.position - transform.up * castDistance, boxSize);
     }
 
     private Vector2 MoveInput()
@@ -140,10 +145,12 @@ public class PlayerMovement : MonoBehaviour
         if (Keyboard.current.aKey.isPressed)
         {
             move.x -= 1;
+            isLeft = true;
         }
         if (Keyboard.current.dKey.isPressed)
         {
             move.x += 1;
+            isLeft = false;
         }
         if (Keyboard.current.wKey.isPressed)
         {
