@@ -1,57 +1,117 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
+    public float runAcceleration = 50;
     public float jumpHeight = 2;
     public float jumpDelay = 0.1f;
+    public float jumpGravity = 10;
+    public float jumpEndGravity = 60;
+    public float fallGravity = 20;
+    public float maxFallSpeed = 30;
     private Rigidbody2D rb;
     public Vector2 boxSize;
     public float castDistance;
     public LayerMask groundLayer;
 
+    [SerializeField]
+    private Vector2 velocity;
+    private float gravity;
+    [SerializeField]
+    private bool isGrounded;
+    private bool isJumping;
+
+    private Vector2 moveVel;
+
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        gravity = fallGravity;
     }
 
     void Update()
     {
-        if(Keyboard.current.aKey.isPressed)
+        if (!Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer))
         {
-            transform.Translate(Vector3.left * speed * Time.deltaTime);
+            isGrounded = false;
+        }
+        if (isGrounded && !isJumping)
+        {
+            velocity.y = 0;
         }
 
-        if (Keyboard.current.dKey.isPressed)
+        Vector2 moveDir = Vector2.zero;
+        if (Mathf.Abs(MoveInput().x) > 0.1)
         {
-            transform.Translate(Vector3.right * speed * Time.deltaTime);
+            moveDir = new Vector2(MoveInput().x, 0).normalized * speed;
+        }
+        moveVel = Vector2.MoveTowards(moveVel, moveDir, runAcceleration * Time.deltaTime);
+        velocity.x = moveVel.x;
+
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
+        {
+            velocity.y = jumpHeight;
+            gravity = jumpGravity;
+            isJumping = true;
+        }
+        if (Keyboard.current.spaceKey.wasReleasedThisFrame && !isFalling())
+        {
+            //velocity.y = rb.linearVelocity.y * jumpDelay;
+            gravity = jumpEndGravity;
+            isJumping = false;
+        }
+        if (isFalling() || isGrounded)
+        {
+            gravity = fallGravity;
         }
 
-        if (Keyboard.current.wKey.isPressed && isGrounded())
+        velocity.y -= gravity * Time.deltaTime;
+        if (isFalling())
         {
-            rb.linearVelocity = new Vector2(0, jumpHeight);
+            velocity.y = Mathf.Clamp(velocity.y, -maxFallSpeed, 0);
         }
-        if (Keyboard.current.wKey.wasReleasedThisFrame && rb.linearVelocity.y > 0)
-        {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y * jumpDelay);
-        }
+
+        rb.linearVelocity = velocity;
     }
-    /*
-    private void OnCollisionExit2D(Collision2D collision)
+    
+    /*private void OnCollisionExit2D(Collision2D collision)
     {
-        isGrounded = false;
-    }
-
+        foreach (var coll in collision.contacts)
+        {
+            if (Vector2.Angle(coll.normal, Vector2.up) < 30)
+            {
+                isGrounded = false;
+            }
+        }
+    }*/
+    
     
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        isGrounded = true;
-    }
-    */
+        foreach (var coll in collision.contacts)
+        {
+            if (Vector2.Angle(coll.normal, Vector2.up) < 30)
+            {
+                isGrounded = true;
+                velocity.y = 0;
+            }
+        }
 
-    public bool isGrounded()
+    }
+    
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        foreach (var coll in collision.contacts)
+        {
+            //if (coll.normal)
+        }
+    }
+
+    public bool IsGrounded()
     {
         if(Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer)){
             return true;
@@ -63,9 +123,36 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public bool isFalling()
+    {
+        return velocity.y < 0 && !isGrounded;
+    }
+
     private void OnDrawGizmos()
     {
       
         Gizmos.DrawWireCube(transform.position-transform.up* castDistance, boxSize);
+    }
+
+    private Vector2 MoveInput()
+    {
+        Vector2 move = Vector2.zero;
+        if (Keyboard.current.aKey.isPressed)
+        {
+            move.x -= 1;
+        }
+        if (Keyboard.current.dKey.isPressed)
+        {
+            move.x += 1;
+        }
+        if (Keyboard.current.wKey.isPressed)
+        {
+            move.y += 1;
+        }
+        if (Keyboard.current.sKey.isPressed)
+        {
+            move.x -= 1;
+        }
+        return move;
     }
 }
