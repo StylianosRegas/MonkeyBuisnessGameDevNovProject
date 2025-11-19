@@ -860,7 +860,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -882,7 +882,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 2f667e0cee827ec4c86fff27aaedc922, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -931,13 +931,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement2d
   speed: 7
-  jumpHeight: 7
+  jumpHeight: 12
   jumpDelay: 0.1
+  jumpGravity: 10
+  jumpEndGravity: 60
+  fallGravity: 20
+  maxFallSpeed: 30
   boxSize: {x: 1.6, y: 0.3}
   castDistance: 1.3
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  velocity: {x: 0, y: 0}
+  isGrounded: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
