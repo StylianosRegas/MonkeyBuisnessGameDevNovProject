@@ -29,6 +29,16 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 moveVel;
 
+    private bool active = true;
+    public void Enable()
+    {
+        active = true;
+    }
+    public void Disable()
+    {
+        active = false;
+    }
+
 
     private void Start()
     {
@@ -38,6 +48,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!active)
+        {
+            return;
+        }
+
         if (!Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer))
         {
             isGrounded = false;

@@ -17,6 +17,16 @@ public class BananaThrower : MonoBehaviour
     private Vector2 spawnPosition;
     private Vector2 spawnVelocity;
 
+    private bool active = true;
+    public void Enable()
+    {
+        active = true;
+    }
+    public void Disable()
+    {
+        active = false;
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -28,6 +38,11 @@ public class BananaThrower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!active)
+        {
+            return;
+        }
+
         if (Keyboard.current.eKey.wasPressedThisFrame && cooldownTimer <= 0 )
         {
 
