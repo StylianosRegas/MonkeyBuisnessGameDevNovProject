@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerSwing : MonoBehaviour
@@ -30,5 +31,10 @@ public class PlayerSwing : MonoBehaviour
         }
 
 
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        
     }
 }
