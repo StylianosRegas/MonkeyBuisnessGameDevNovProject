@@ -6,7 +6,7 @@ public class PlayerState : MonoBehaviour
     [SerializeField] private BananaThrower bananaThrow;
     [SerializeField] private PlayerSwing swing;
 
-    private MoveState moveState;
+    [SerializeField] private MoveState moveState;
 
     private enum MoveState
     {

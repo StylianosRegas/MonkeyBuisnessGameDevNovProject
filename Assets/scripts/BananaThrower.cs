@@ -6,9 +6,15 @@ using UnityEngine.WSA;
 public class BananaThrower : MonoBehaviour
 {
     public GameObject Banana;
-    public int launchForceX = 5;
-    public int launchForceY = 5;
-    public int angularForce = 300;
+    public float bananaSize = 1;
+    public Vector2 spawnOffset; 
+    public float minThrowSpeed = 10;
+    public float maxThrowSpeed = 10;
+    public float minThrowAngle = 30;
+    public float maxThrowAngle = 30;
+    //public float launchForceX = 5;
+    //public float launchForceY = 5;
+    public float angularForce = 300;
     public float cooldownDuration = 1.0f;
 
     public PlayerMovement playerMovement;
@@ -46,21 +52,31 @@ public class BananaThrower : MonoBehaviour
         if (Keyboard.current.eKey.wasPressedThisFrame && cooldownTimer <= 0 )
         {
 
+            float angVel = Random.Range(-angularForce, angularForce);
+            float throwAng = Random.Range(minThrowAngle, maxThrowAngle);
+            float throwSpeed = Random.Range(minThrowSpeed, maxThrowSpeed);
+
             if(playerMovement.isLeft)
             {
-                spawnPosition = new Vector2(transform.position.x - 2, transform.position.y + 2);
+                spawnPosition = new Vector2(transform.position.x - spawnOffset.x, transform.position.y + spawnOffset.y);
                 GameObject newBanana = Instantiate(Banana, spawnPosition, Quaternion.identity);
                 Rigidbody2D rb = newBanana.GetComponent<Rigidbody2D>();
-                rb.linearVelocity = new Vector2(-launchForceX, launchForceY);
-                rb.angularVelocity = new Vector2(0, 300).magnitude;
+                newBanana.transform.localScale = Vector3.one * bananaSize;
+                //rb.linearVelocity = new Vector2(-launchForceX, launchForceY) + playerMovement.velocity;
+                Vector2 throwDir = Quaternion.AngleAxis(-throwAng, Vector3.forward) * -Vector2.right * throwSpeed;
+                rb.linearVelocity = throwDir + playerMovement.velocity;
+                rb.angularVelocity = angVel;
             }
             else
             {
-                spawnPosition = new Vector2(transform.position.x + 2, transform.position.y + 2);
+                spawnPosition = new Vector2(transform.position.x + spawnOffset.x, transform.position.y + spawnOffset.y);
                 GameObject newBanana = Instantiate(Banana, spawnPosition, Quaternion.identity);
                 Rigidbody2D rb = newBanana.GetComponent<Rigidbody2D>();
-                rb.linearVelocity = new Vector2(launchForceX, launchForceY);
-                rb.angularVelocity = new Vector2(0, 300).magnitude;
+                newBanana.transform.localScale = Vector3.one * bananaSize;
+                //rb.linearVelocity = new Vector2(launchForceX, launchForceY) + playerMovement.velocity;
+                Vector2 throwDir = Quaternion.AngleAxis(throwAng, Vector3.forward) * Vector2.right * throwSpeed;
+                rb.linearVelocity = throwDir + playerMovement.velocity;
+                rb.angularVelocity = angVel;
             }
             
             

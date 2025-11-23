@@ -46,7 +46,7 @@ public class VineTool : MonoBehaviour
 
         if (vine != null && hitbox != null)
         {
-            hitbox.size = new Vector2(1, vine.vineLength);
+            hitbox.size = new Vector2(hitbox.size.x, vine.vineLength);
             hitbox.offset = new Vector2(0, -vine.vineLength * 0.5f);
 
             if (line != null)
