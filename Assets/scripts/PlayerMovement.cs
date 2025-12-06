@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
     public float runAcceleration = 50;
+    public float slowdownAccel = 20;
     public float jumpHeight = 2;
     public float jumpDelay = 0.1f;
     public float jumpGravity = 10;
@@ -20,14 +21,23 @@ public class PlayerMovement : MonoBehaviour
     
 
 
-    [SerializeField]
-    private Vector2 velocity;
+    public Vector2 velocity;
     private float gravity;
     [SerializeField]
     private bool isGrounded;
     private bool isJumping;
 
     private Vector2 moveVel;
+
+    private bool active = true;
+    public void Enable()
+    {
+        active = true;
+    }
+    public void Disable()
+    {
+        active = false;
+    }
 
 
     private void Start()
@@ -38,6 +48,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        //velocity = rb.linearVelocity;
+        moveVel.x = velocity.x;
+        if (!active)
+        {
+            isJumping = false;
+            return;
+        }
+
         if (!Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer))
         {
             isGrounded = false;
@@ -52,14 +70,17 @@ public class PlayerMovement : MonoBehaviour
         {
             moveDir = new Vector2(MoveInput().x, 0).normalized * speed;
         }
-        moveVel = Vector2.MoveTowards(moveVel, moveDir, runAcceleration * Time.deltaTime);
+
+        float accel = runAcceleration;
+        if (Mathf.Abs(velocity.x) > speed && !isGrounded)
+            accel = slowdownAccel;
+
+        moveVel = Vector2.MoveTowards(moveVel, moveDir, accel * Time.deltaTime);
         velocity.x = moveVel.x;
 
         if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
         {
-            velocity.y = jumpHeight;
-            gravity = jumpGravity;
-            isJumping = true;
+            Jump();
         }
         if (Keyboard.current.spaceKey.wasReleasedThisFrame && !isFalling())
         {
@@ -67,7 +88,11 @@ public class PlayerMovement : MonoBehaviour
             gravity = jumpEndGravity;
             isJumping = false;
         }
-        if (isFalling() || isGrounded)
+        if (isFalling() && !isGrounded)
+        {
+            isJumping = false;
+        }
+        if ((isFalling() || isGrounded) && !isJumping)
         {
             gravity = fallGravity;
         }
@@ -115,6 +140,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void Jump()
+    {
+        velocity.y = jumpHeight;
+        gravity = jumpGravity;
+        isJumping = true;
+    }
+
     public bool IsGrounded()
     {
         if (Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer))
@@ -133,13 +165,19 @@ public class PlayerMovement : MonoBehaviour
         return velocity.y < 0 && !isGrounded;
     }
 
+    public void SetVelocity(Vector2 newVelocity)
+    {
+        velocity = newVelocity;
+        rb.linearVelocity = newVelocity;
+    }
+
     private void OnDrawGizmos()
     {
 
         Gizmos.DrawWireCube(transform.position - transform.up * castDistance, boxSize);
     }
 
-    private Vector2 MoveInput()
+    public Vector2 MoveInput()
     {
         Vector2 move = Vector2.zero;
         if (Keyboard.current.aKey.isPressed)
@@ -158,7 +196,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if (Keyboard.current.sKey.isPressed)
         {
-            move.x -= 1;
+            move.y -= 1;
         }
         return move;
     }
