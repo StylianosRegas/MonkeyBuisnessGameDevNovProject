@@ -7,6 +7,8 @@ public class VineTool : MonoBehaviour
     private BoxCollider2D hitbox;
     private LineRenderer line;
 
+    [SerializeField] private Transform endSprite;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -53,6 +55,11 @@ public class VineTool : MonoBehaviour
             {
                 line.SetPositions(new Vector3[] { vine.transform.position, vine.transform.position - (vine.transform.up * vine.vineLength) });
             }
+        }
+
+        if (endSprite != null)
+        {
+            endSprite.transform.position = vine.transform.position - (vine.transform.up * vine.vineLength);
         }
     }
 }
