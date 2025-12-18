@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     public float castDistance;
     public LayerMask groundLayer;
     public bool isLeft = false;
+    public float pagesCollected = 0;
     
 
 
@@ -128,6 +129,13 @@ public class PlayerMovement : MonoBehaviour
                 isGrounded = true;
                 velocity.y = 0;
             }
+        }
+
+        if (collision.gameObject.CompareTag("Page"))
+        {
+            collision.gameObject.SetActive(false);
+            pagesCollected++;
+
         }
 
     }

@@ -8,6 +8,9 @@ public class PlayerState : MonoBehaviour
 
     [SerializeField] private MoveState moveState;
 
+    public float pagesCollected;
+    public bool finalDoor = false;
+
     private enum MoveState
     {
         Moving,
@@ -17,12 +20,13 @@ public class PlayerState : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame
     void Update()
     {
+        pagesCollected = playerMove.pagesCollected;
         if (swing.isSwinging && moveState != MoveState.Swinging)
         {
             moveState = MoveState.Swinging;
@@ -36,6 +40,11 @@ public class PlayerState : MonoBehaviour
             playerMove.Enable();
             bananaThrow.Enable();
             swing.Disable();
+        }
+
+        if(pagesCollected == 4)
+        {
+            finalDoor = true;   
         }
     }
 }
