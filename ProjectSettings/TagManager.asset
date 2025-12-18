@@ -7,6 +7,7 @@ TagManager:
   - BananaPro
   - Enemy
   - Page
+  - BananaHut
   layers:
   - Default
   - TransparentFX

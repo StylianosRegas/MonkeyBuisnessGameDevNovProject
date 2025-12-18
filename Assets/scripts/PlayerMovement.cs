@@ -14,12 +14,15 @@ public class PlayerMovement : MonoBehaviour
     public float fallGravity = 20;
     public float maxFallSpeed = 30;
     private Rigidbody2D rb;
-    public Vector2 boxSize;
     public float castDistance;
     public LayerMask groundLayer;
-    public bool isLeft = false;
     public float pagesCollected = 0;
-    
+    public float deathZone = -100;
+    public Vector2 savePosition;
+    public Vector2 boxSize;
+    public bool isLeft = false;
+    public bool isDead;
+
 
 
     public Vector2 velocity;
@@ -45,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         gravity = fallGravity;
+        savePosition = new Vector2(transform.position.x,transform.position.y);
     }
 
     void Update()
@@ -104,6 +108,17 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Clamp(velocity.y, -maxFallSpeed, 0);
         }
 
+        if( transform.position.y <= deathZone)
+        {
+            isDead = true;
+        }
+
+        if (isDead)
+        {
+            transform.position = savePosition;
+            isDead = false;
+        }
+
 
         rb.linearVelocity = velocity;
     }
@@ -131,6 +146,21 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        
+
+    }
+
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        foreach (var coll in collision.contacts)
+        {
+            //if (coll.normal)
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
         if (collision.gameObject.CompareTag("Page"))
         {
             collision.gameObject.SetActive(false);
@@ -138,13 +168,9 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        foreach (var coll in collision.contacts)
+        if (collision.gameObject.CompareTag("BananaHut"))
         {
-            //if (coll.normal)
+            savePosition = new Vector2(transform.position.x, transform.position.y);
         }
     }
 
